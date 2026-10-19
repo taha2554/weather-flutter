@@ -1,0 +1,54 @@
+# Weather (Flutter)
+
+![CI](https://github.com/taha2554/weather-flutter/actions/workflows/ci.yml/badge.svg)
+
+A clean weather app written in **Flutter / Dart**. It uses the free [Open-Meteo](https://open-meteo.com/) API, so there are no API keys or accounts involved.
+
+## Features
+
+- Current conditions: temperature, feels-like, humidity, wind, sunrise and sunset
+- Hourly strip for the next 24 hours with chance of rain
+- 7-day forecast with temperature range bars scaled across the week
+- City search with debouncing (waits for you to stop typing before calling the API)
+- Saved places in a drawer, remembered between launches (`shared_preferences`)
+- Pull to refresh, error state with retry, light and dark theme (Material 3)
+- Day / night icons based on the WMO weather codes
+
+## Structure
+
+```
+lib/
+  main.dart                    app + theme
+  models/weather.dart          Place, Forecast, CurrentWeather, HourlyPoint, DailyForecast (+ JSON parsing)
+  models/weather_code.dart     WMO code -> label and icon
+  services/weather_api.dart    geocoding + forecast requests (http)
+  services/place_store.dart    saved places
+  screens/                     home and search screens
+  widgets/                     hourly strip, daily list
+test/forecast_test.dart        parsing, API client (MockClient) and a widget test
+```
+
+The API client takes an `http.Client` in its constructor, so the tests use `MockClient` and never touch the network. Requests use `timezone=auto`, which means all times in the response are already local to the selected city.
+
+## Running
+
+This repository contains the Dart code only; generate the platform folders once with `flutter create`:
+
+```bash
+flutter create --platforms=android,ios,web --project-name weather_flutter .
+flutter pub get
+flutter run
+```
+
+```bash
+flutter test
+flutter analyze
+```
+
+## Data
+
+Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0).
+
+## License
+
+MIT
