@@ -17,6 +17,17 @@ jobs:
       - name: Generate platform folders
         run: flutter create --platforms=android,ios,web --project-name weather_flutter --org dev.taha .
       - run: flutter pub get
-      - run: flutter analyze
-      - run: flutter test
+      - name: Analyze
+        run: |
+          flutter analyze > analyze.log 2>&1 || {
+            grep -E "error|warning|info" analyze.log | head -40 | sed 's/^/::error::/'
+            exit 1
+          }
+      - name: Test
+        run: |
+          set -o pipefail
+          flutter test 2>&1 | tee test.log || {
+            grep -E "Error|Expected|Actual|FAILED|\.dart:[0-9]+" test.log | head -40 | sed 's/^/::error::/'
+            exit 1
+          }
       - run: flutter build web --release
