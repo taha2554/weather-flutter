@@ -15,7 +15,10 @@ jobs:
           channel: stable
           cache: true
       - name: Generate platform folders
-        run: flutter create --platforms=android,ios,web --project-name weather_flutter --org dev.taha .
+        run: |
+          flutter create --platforms=android,ios,web --project-name weather_flutter --org dev.taha .
+          # flutter create adds a sample counter test that doesn't apply to this app
+          rm -f test/widget_test.dart
       - run: flutter pub get
       - name: Analyze
         run: |
